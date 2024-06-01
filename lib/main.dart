@@ -25,13 +25,17 @@ class ForestVPNTestApp extends StatelessWidget {
       child: FeaturedNewsScope(
         child: MaterialApp(
           theme: ThemeData(
-              scaffoldBackgroundColor: const Color(0xFFF9F9F9),
-              colorScheme: const ColorScheme.light(),
-              appBarTheme: const AppBarTheme(
-                  backgroundColor: Color(0xFFF9F9F9),
-                  surfaceTintColor: Color(0xFFF9F9F9),
-                  titleTextStyle:
-                      TextStyle(fontSize: 18, color: Colors.black))),
+            scaffoldBackgroundColor: const Color(0xFFF9F9F9),
+            colorScheme: const ColorScheme.light(),
+            appBarTheme: const AppBarTheme(
+                backgroundColor: Color(0xFFF9F9F9),
+                surfaceTintColor: Color(0xFFF9F9F9),
+                titleTextStyle: TextStyle(fontSize: 18, color: Colors.black)),
+            actionIconTheme: ActionIconThemeData(
+              backButtonIconBuilder: (BuildContext context) =>
+                  const Icon(Icons.arrow_back_ios),
+            ),
+          ),
           title: 'ForestVPN test',
           home: const NewsScreen(),
           builder: (context, child) => SizedBox(

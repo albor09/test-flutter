@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forestvpn_test/feature/news/data/abstract_news_repository.dart';
 import 'package:forestvpn_test/feature/news/model/article.dart';
@@ -8,7 +9,8 @@ class FeaturedNewsBloc extends Bloc<FeaturedNewsEvent, FeaturedNewsState> {
         super(const FeaturedNewsState.initial()) {
     on<FeaturedNewsEvent>((event, emit) => switch (event) {
           _LoadNewsEvent() => _loadNews(event, emit),
-          _ReadAllNewsEvent() => _readAllNew(event, emit),
+          _ReadAllArticlesEvent() => _readAllArticles(event, emit),
+          _ReadArticleEvent() => readArticle(event, emit)
         });
   }
 
@@ -20,10 +22,18 @@ class FeaturedNewsBloc extends Bloc<FeaturedNewsEvent, FeaturedNewsState> {
     emit(FeaturedNewsState.loaded(articles: data));
   }
 
-  Future<void> _readAllNew(_ReadAllNewsEvent event, Emitter emit) async {
+  Future<void> _readAllArticles(
+      _ReadAllArticlesEvent event, Emitter emit) async {
     emit(FeaturedNewsState.loaded(
         articles:
             state.articles.map((x) => x.copyWith(readed: true)).toList()));
+  }
+
+  Future<void> readArticle(_ReadArticleEvent event, Emitter emit) async {
+    emit(FeaturedNewsState.loaded(
+        articles: state.articles
+            .map((x) => x.id == event.id ? x.copyWith(readed: true) : x)
+            .toList()));
   }
 }
 
@@ -75,13 +85,21 @@ sealed class FeaturedNewsEvent {
   const FeaturedNewsEvent();
 
   const factory FeaturedNewsEvent.loadNews() = _LoadNewsEvent;
-  const factory FeaturedNewsEvent.readAllNews() = _ReadAllNewsEvent;
+  const factory FeaturedNewsEvent.readAllArticles() = _ReadAllArticlesEvent;
+  const factory FeaturedNewsEvent.readArticle({required String id}) =
+      _ReadArticleEvent;
 }
 
 final class _LoadNewsEvent extends FeaturedNewsEvent {
   const _LoadNewsEvent();
 }
 
-final class _ReadAllNewsEvent extends FeaturedNewsEvent {
-  const _ReadAllNewsEvent();
+final class _ReadAllArticlesEvent extends FeaturedNewsEvent {
+  const _ReadAllArticlesEvent();
+}
+
+final class _ReadArticleEvent extends FeaturedNewsEvent {
+  const _ReadArticleEvent({required this.id});
+
+  final String id;
 }

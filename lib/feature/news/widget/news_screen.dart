@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forestvpn_test/core/extensions/date_time_extension.dart';
 import 'package:forestvpn_test/feature/news/model/article.dart';
+import 'package:forestvpn_test/feature/news/widget/article_screen.dart';
 import 'package:forestvpn_test/feature/news/widget/featured_news_list.dart';
 import 'package:forestvpn_test/feature/news/widget/featured_news_scope.dart';
 
@@ -24,7 +25,7 @@ class _NewsScreenState extends State<NewsScreen> {
             padding: const EdgeInsets.only(right: 8),
             child: GestureDetector(
               onTap: () {
-                FeaturedNewsScope.of(context).readAllNews();
+                FeaturedNewsScope.of(context).readAllArticles();
               },
               child: const Text(
                 "Mark all read",
@@ -75,7 +76,12 @@ class _NewsScreenState extends State<NewsScreen> {
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 16,
                 ),
-              ))
+              )),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 8,
+            ),
+          )
         ],
       )),
     );
@@ -101,56 +107,63 @@ class _LatesNewsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      height: 100,
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: const Offset(1, 1),
-            blurRadius: 4,
-            spreadRadius: 2)
-      ], color: Colors.white, borderRadius: BorderRadius.circular(16)),
-      child: SizedBox(
-        child: Row(
-          children: [
-            AspectRatio(
-              aspectRatio: 3 / 2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  article.imageUrl,
-                  fit: BoxFit.fill,
+    return GestureDetector(
+      onTap: () {
+        FeaturedNewsScope.of(context).readArticle(article.id);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ArticleScreen(artilce: article)));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        height: 100,
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(1, 1),
+              blurRadius: 4,
+              spreadRadius: 2)
+        ], color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        child: SizedBox(
+          child: Row(
+            children: [
+              AspectRatio(
+                aspectRatio: 3 / 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    article.imageUrl,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    article.title,
-                    style: const TextStyle(fontSize: 16, height: 1),
-                  ),
-                  const Spacer(),
-                  Text(
-                    article.publicationDate.timeAgo(),
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
-                  )
-                ],
+              const SizedBox(
+                width: 16,
               ),
-            ),
-            Container(
-              height: 8,
-              width: 8,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: article.readed ? Colors.transparent : Colors.blue),
-            ),
-          ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.title,
+                      style: const TextStyle(fontSize: 16, height: 1),
+                    ),
+                    const Spacer(),
+                    Text(
+                      article.publicationDate.timeAgo(),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                height: 8,
+                width: 8,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: article.readed ? Colors.transparent : Colors.blue),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forestvpn_test/feature/news/model/article.dart';
+import 'package:forestvpn_test/feature/news/widget/article_screen.dart';
+import 'package:forestvpn_test/feature/news/widget/featured_news_scope.dart';
 
 class FeaturedNewsList extends SliverPersistentHeaderDelegate {
   const FeaturedNewsList(this.context, {required this.articles});
@@ -24,7 +26,7 @@ class FeaturedNewsList extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 320;
+  double get maxExtent => MediaQuery.of(context).size.height / 2.5;
 
   @override
   double get minExtent => 120; // height of latest news item + padding
@@ -42,44 +44,52 @@ class _FeaturedNewsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width - 16 * 2,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned.fill(
-            child: Container(
+    return GestureDetector(
+      onTap: () {
+        FeaturedNewsScope.of(context).readArticle(article.id);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ArticleScreen(artilce: article)));
+      },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width - 16 * 2,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: Container(
+                margin: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(article.imageUrl),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          offset: const Offset(2, 2),
+                          blurRadius: 5,
+                          spreadRadius: 2)
+                    ]),
+              ),
+            ),
+            Positioned.fill(
+                child: Container(
               margin: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(article.imageUrl), fit: BoxFit.cover),
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
-                        offset: const Offset(2, 2),
-                        blurRadius: 5,
-                        spreadRadius: 2)
-                  ]),
-            ),
-          ),
-          Positioned.fill(
-              child: Container(
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.black.withOpacity(0.7)),
-          )),
-          Positioned.fill(
-              child: Container(
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              article.title,
-              style: const TextStyle(fontSize: 26, color: Colors.white),
-            ),
-          ))
-        ],
+                  color: Colors.black.withOpacity(0.7)),
+            )),
+            Positioned.fill(
+                child: Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                article.title,
+                style: const TextStyle(fontSize: 26, color: Colors.white),
+              ),
+            ))
+          ],
+        ),
       ),
     );
   }

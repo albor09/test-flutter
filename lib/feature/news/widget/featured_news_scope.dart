@@ -40,8 +40,12 @@ class _FeaturedNewsScopeState extends State<FeaturedNewsScope> {
     _bloc.add(const FeaturedNewsEvent.loadNews());
   }
 
-  void readAllNews() {
-    _bloc.add(const FeaturedNewsEvent.readAllNews());
+  void readAllArticles() {
+    _bloc.add(const FeaturedNewsEvent.readAllArticles());
+  }
+
+  void readArticle(String id) {
+    _bloc.add(FeaturedNewsEvent.readArticle(id: id));
   }
 
   @override
