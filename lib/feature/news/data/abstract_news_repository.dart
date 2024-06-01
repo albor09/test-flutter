@@ -1,4 +1,4 @@
-import 'package:forestvpn_test/repositories/news/repository.dart';
+import 'package:forestvpn_test/feature/news/model/article.dart';
 
 abstract class AbstractNewsRepository {
   Future<List<Article>> getLatestArticles();
